@@ -22,16 +22,15 @@ class MainActivity : AppCompatActivity() {
             Python.start(AndroidPlatform(this))
         }
         val py = Python.getInstance()
-        val module = py.getModule("plot")
+        val module = py.getModule("test-lightrag")
 
         findViewById<Button>(R.id.button).setOnClickListener {
             try {
-                val bytes = module.callAttr("plot",
-                                            findViewById<EditText>(R.id.etX).text.toString(),
-                                            findViewById<EditText>(R.id.etY).text.toString())
-                    .toJava(ByteArray::class.java)
-                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
+                // 调用 Python 的 run_main_sync 函数并获取返回值
+                android.util.Log.d("MainActivity", "asdasdasdasdas1111111")
+                val result = module.callAttr("test_main")?.toString()
+                android.util.Log.d("MainActivity", "Python返回: $result")
+                Toast.makeText(this, result ?: "无返回内容", Toast.LENGTH_LONG).show()
 
                 currentFocus?.let {
                     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -39,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch (e: PyException) {
                 Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+                android.util.Log.e("MainActivity", "Python错误: ${e.message}", e)
             }
         }
     }
